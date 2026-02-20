@@ -1,0 +1,28 @@
+# YTDARK | BY SORENUS15K — Configuração
+# Copie para ~/.ytdark/config.yaml (permissões 600 aplicadas automaticamente)
+# NUNCA commite este arquivo com a key preenchida.
+
+api:
+  key: ""  # Use: export YOUTUBE_API_KEY="AIza..."
+
+defaults:
+  quota_budget: 5000
+  comments_mode: "off"       # off | sample | top_only | sample+top_only
+  max_comments: 50
+  ttl_days: 30
+  export_formats: ["md", "sqlite"]
+  output_dir: "./reports/"
+  language: "any"            # pt | en | any
+  resolver_mode: "auto"      # auto | handle_only | strict_id
+  log_level: "info"
+  short_threshold: 60
+  outlier_method: "iqr"      # iqr | zscore
+  outlier_zscore: 2.0
+  max_retry: 3
+  request_rate: 2.0          # req/s
+
+database:
+  path: ""   # padrão: ~/.ytdark/data.db
+
+logging:
+  file: ""   # vazio = somente console

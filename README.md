@@ -1,332 +1,269 @@
-# YTDARK BY SORENUS15K
-
-> **Ferramenta OSINT YouTube — Análise de Canais, Métricas e Ideação de Conteúdo**
+# YTDARK | BY SORENUS15K
 
 ```
-██╗   ██╗████████╗██████╗  █████╗ ██████╗ ██╗  ██╗
-╚██╗ ██╔╝╚══██╔══╝██╔══██╗██╔══██╗██╔══██╗██║ ██╔╝
- ╚████╔╝    ██║   ██║  ██║███████║██████╔╝█████╔╝ 
-  ╚██╔╝     ██║   ██║  ██║██╔══██║██╔══██╗██╔═██╗ 
-   ██║      ██║   ██████╔╝██║  ██║██║  ██║██║  ██╗
-   ╚═╝      ╚═╝   ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
-                                       BY SORENUS15K
+ ██╗   ██╗████████╗██████╗  █████╗ ██████╗ ██╗  ██╗
+ ╚██╗ ██╔╝╚══██╔══╝██╔══██╗██╔══██╗██╔══██╗██║ ██╔╝
+  ╚████╔╝    ██║   ██║  ██║███████║██████╔╝█████╔╝ 
+   ╚██╔╝     ██║   ██║  ██║██╔══██║██╔══██╗██╔═██╗ 
+    ██║       ██║   ██████╔╝██║  ██║██║  ██║██║  ██╗
+    ╚═╝       ╚═╝   ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
+              B Y   S O R E N U S 1 5 K   v2.0
 ```
 
-[![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue?style=flat-square&logo=python)](https://www.python.org/)
-[![YouTube Data API v3](https://img.shields.io/badge/YouTube%20Data%20API-v3-red?style=flat-square&logo=youtube)](https://developers.google.com/youtube/v3)
-[![SQLite](https://img.shields.io/badge/Storage-SQLite-lightblue?style=flat-square&logo=sqlite)](https://sqlite.org/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green?style=flat-square)](LICENSE)
-[![Compliance: YouTube ToS](https://img.shields.io/badge/Compliance-YouTube%20ToS-orange?style=flat-square)](https://developers.google.com/youtube/terms/api-services-terms-of-service)
+**Ferramenta OSINT local para análise profunda de canais YouTube via YouTube Data API v3.**  
+Executa via CLI ou TUI interativa, salva dados em SQLite, exporta para CSV/JSON/XLSX/ODS/Markdown.
 
 ---
 
-## O que é o YTDARK?
-
-YTDARK é uma ferramenta **OSINT focada em YouTube**, executada **100% localmente no terminal** (CLI e TUI interativo), que analisa canais públicos usando exclusivamente a **YouTube Data API v3 oficial**.
-
-Ela foi projetada para **pesquisadores de nicho, criadores de conteúdo e analistas** que precisam entender o que está performando em um canal — sem depender de scraping, sem violar políticas da plataforma e sem comprometer a privacidade de ninguém.
-
-> **"Dark channel"** é definido exclusivamente como estilo de produção: vídeos sem rosto do criador (narrados, animados, compilados, screen recordings). A ferramenta não incentiva, facilita ou sugere qualquer prática ilegal.
-
----
-
-## Funcionalidades
-
-### 📊 Análise de Performance
-- Velocidade de vídeos em **views por dia** com baseline do canal (mediana)
-- **Delta vs. baseline**: saiba quais vídeos estão acima ou abaixo do típico
-- **Detecção de outliers** por IQR ou Z-Score (configurável)
-- **Crescimento tardio** (late bloomers) — detectado via histórico de runs
-
-### 🔗 Radar de Monetização
-- Extração e classificação de links de descrição: afiliado, hub, produto próprio, social, comunidade
-- **CTA Score** (0–100) com scoring explicável por sinal
-- Inferência do modelo de monetização do canal por heurísticas
-
-### 💡 Ideação de Conteúdo
-- Detecção de **padrões de título** por regex (Como X em Y, Erro que Z comete, etc.)
-- **Clustering semântico** de temas (heurística no MVP; embeddings locais na v1)
-- 10 sugestões de vídeo baseadas em dados — sem copiar conteúdo de ninguém
-
-### 💬 Análise de Comentários (Opcional)
-- Amostragem de texto bruto — **zero PII coletada**
-- Perguntas recorrentes, dores, pedidos de tema e sentimento agregado
-- Modos: `off`, `sample`, `top_only`, `sample+top_only`
-
-### 🖥️ Interface
-- **TUI interativo** com 6 telas navegáveis (Overview, Vídeos, Breakouts, Monetização, Temas, Comentários)
-- **CLI headless** para automação e scripts
-- Exports: Markdown, HTML, CSV, SQLite, JSON
-
----
-
-## Instalação
+## Quick Start
 
 ```bash
-# Clone o repositório
-git clone https://github.com/sorenus15k/ytdark.git
-cd ytdark
+# 1. Build
+./gradlew shadowJar
+# 2. Configurar API key (NUNCA no código)
+export YOUTUBE_API_KEY="AIzaSy..."
 
-# Crie um ambiente virtual (recomendado)
-python -m venv .venv
-source .venv/bin/activate  # Linux/macOS
-# .venv\Scripts\activate   # Windows
+# 3. Primeiro scan
+java -jar build/libs/ytdark-all.jar scan --target @canal
 
-# Instale as dependências
-pip install -r requirements.txt
+# 4. TUI interativa
+java -jar build/libs/ytdark-all.jar tui
 ```
-
-### Requisitos
-- Python 3.10+
-- Linux, macOS ou Windows (WSL2 recomendado; PowerShell suportado)
-- Chave de acesso à **YouTube Data API v3** (gratuita — Google Cloud Console)
 
 ---
 
-## Configuração da API Key
+## Pré-requisitos
 
-**Nunca** inclua sua API key no código ou em arquivos commitados.
+| Requisito | Versão | Como obter |
+|-----------|--------|------------|
+| Java JDK | 17+ | https://adoptium.net |
+| YouTube Data API v3 key | - | https://console.cloud.google.com/apis/credentials |
+| Gradle (via wrapper) | 8.7 | Incluído no projeto |
+
+---
+
+## Comandos CLI
+
+### `scan` — Analisar canal
 
 ```bash
-# Recomendado: variável de ambiente
-export YOUTUBE_API_KEY="sua_chave_aqui"
-
-# Ou configure no arquivo (não commitar):
-cp config.example.yaml ~/.sorenus15k/config.yaml
-# Edite e adicione sua key no campo api.key
+java -jar build/libs/ytdark-all.jar scan \
+  --target @canal \                  # ou UCid ou URL completa
+  --comments sample \                # off | sample | top_only | sample+top_only
+  --max-comments 100 \               # máximo de comentários
+  --since 2024-01-01 \               # data inicial YYYY-MM-DD
+  --until 2024-12-31 \               # data final YYYY-MM-DD
+  --quota-budget 5000 \              # orçamento de cota
+  --format csv \                     # formato de export (repetível)
+  --format xlsx \
+  --output ./reports/ \              # diretório de saída
+  --refresh \                        # ignorar cache
+  --api-key AIzaSy...                # key (ou use YOUTUBE_API_KEY)
 ```
 
-> Cada usuário utiliza sua própria chave de API e é responsável pelo uso dentro das cotas e políticas do YouTube Developer.
+**Formatos de --target suportados:**
 
----
+| Formato | Exemplo |
+|---------|---------|
+| Handle | `@canal` |
+| Channel ID | `UCxxxxxxxxxxxxxxxxxxxxxx` |
+| URL com ID | `https://youtube.com/channel/UCxxx` |
+| URL com handle | `https://youtube.com/@canal` |
+| Username legado | `https://youtube.com/user/nome` |
+| ❌ Vanity URL | `/c/nome` — não suportado pela API |
 
-## Uso Rápido
+### `tui` — Interface interativa
 
 ```bash
-# Análise básica de um canal
-ytdark analyze https://www.youtube.com/@handle \
-  --since 2024-01-01 \
-  --until 2024-12-31
-
-# Com coleta de comentários e export completo
-ytdark analyze https://www.youtube.com/@handle \
-  --since 2024-06-01 --until 2024-12-31 \
-  --comments sample --max-comments 100 \
-  --export md,html,csv,sqlite \
-  --quota-budget 5000
-
-# Comparar até 5 canais (v1)
-ytdark compare @canal1 @canal2 @canal3 \
-  --since 2024-01-01 --until 2024-12-31
-
-# Modo headless (sem TUI, útil para automação)
-ytdark analyze @handle --since 2024-01-01 --until 2024-12-31 --no-tui --yes
+java -jar build/libs/ytdark-all.jar tui [--api-key AIzaSy...]
 ```
 
----
-
-## Flags Principais
-
-| Flag | Descrição | Padrão |
-|---|---|---|
-| `--since DATE` | Data de início (YYYY-MM-DD) | Obrigatório |
-| `--until DATE` | Data de fim (YYYY-MM-DD) | Obrigatório |
-| `--comments MODE` | `off`, `sample`, `top_only`, `sample+top_only` | `off` |
-| `--max-comments N` | Máximo de comentários por vídeo | `50` |
-| `--quota-budget N` | Orçamento de cota em unidades | `5000` |
-| `--export FORMATS` | `md,html,csv,sqlite,json` | `md,sqlite` |
-| `--resolver MODE` | `auto`, `handle_only`, `strict_id` | `auto` |
-| `--language LANG` | `pt`, `en`, `any` | `any` |
-| `--outlier-method` | `iqr` ou `zscore` | `iqr` |
-| `--refresh` | Ignorar cache e re-coletar tudo | — |
-| `--purge-cache` | Apagar cache do canal informado | — |
-| `--no-tui` | Modo headless (CLI puro) | — |
-| `--yes` | Confirmar estimativa de cota automaticamente | — |
-
-Ver `ytdark --help` para a lista completa de flags.
-
----
-
-## Arquivo de Configuração
-
-```yaml
-# ~/.sorenus15k/config.yaml
-
-defaults:
-  quota_budget: 5000
-  comments_mode: "off"
-  max_comments: 50
-  ttl_days: 30
-  export_formats: ["md", "sqlite"]
-  output_dir: "./reports/"
-  language: "any"
-  resolver_mode: "auto"
-  log_level: "info"
-
-api:
-  key: ""  # Use YOUTUBE_API_KEY env var (nunca commitar a key aqui)
-```
-
----
-
-## Custo de Cota da API
-
-A ferramenta é **quota-aware** e evita chamadas caras por padrão:
-
-| Operação | Endpoint | Custo |
-|---|---|---|
-| Resolver canal | `channels.list` | 1 unidade |
-| Listar vídeos (por página) | `playlistItems.list` | 1 unidade |
-| Enriquecer vídeos (lote de 50) | `videos.list` | 1 unidade |
-| Coletar comentários (por página) | `commentThreads.list` | 1 unidade |
-| Busca geral (**evitar**) | `search.list` | **100 unidades** |
-
-**Exemplos de custo real:**
-- Canal com 50 vídeos, sem comentários: ~3 unidades
-- Canal com 200 vídeos, sem comentários: ~9 unidades
-- Canal com 200 vídeos + comentários (50/vídeo): ~209 unidades
-
-O limite padrão da Google é **10.000 unidades/dia** por projeto. A ferramenta nunca ultrapassa o `--quota-budget` sem aviso prévio.
-
----
-
-## Painel TUI — 6 Telas
-
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  YTDARK BY SORENUS15K  │  Canal: @handle  │  Cota: 312/5000        ║
-║  Intervalo: 2024-01-01 → 2024-12-31                                 ║
-╠══════════════════════════════════════════════════════════════════════╣
-║  [A]Overview [B]Vídeos [C]Breakouts [D]Monetiz. [E]Temas [F]Coment ║
-╠══════════╦══════════════════════════╦═════╦════════╦═══════╦════════╣
-║ Data     ║ Título                   ║Tipo ║ Views  ║ V/Dia ║ CTA    ║
-╠══════════╬══════════════════════════╬═════╬════════╬═══════╬════════╣
-║2024-10-15║ Como Ganhar X em Y dias  ║LONG ║284.350 ║ 3.124 ║  88    ║
-║2024-10-08║ Antes de Comprar Qualq...║LONG ║198.420 ║ 1.984 ║  72    ║
-║2024-10-01║ Erro #1 que Iniciantes...║LONG ║102.100 ║   890 ║  45    ║
-╠══════════╩══════════════════════════╩═════╩════════╩═══════╩════════╣
-║  3 de 47 vídeos │ Baseline: 710 V/Dia │ [P]Anterior [N]Próxima     ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
-
-| Tela | Conteúdo |
-|---|---|
-| **A** Overview | Métricas do canal, baseline, top 5, distribuição de tipos |
-| **B** Vídeos | Tabela ordenável/filtrável com todas as métricas |
-| **C** Breakouts | Outliers e vídeos com crescimento tardio |
-| **D** Monetização | Mapa de domínios, tipos de link, CTA Score, modelo inferido |
-| **E** Temas | Clusters semânticos, padrões de título, velocidade por padrão |
-| **F** Comentários | Perguntas, dores, pedidos — anonimizado, sem PII |
-
----
-
-## Compliance e Privacidade
-
-YTDARK foi desenhado com **compliance como requisito não-negociável**:
-
-| ✅ O que fazemos | ❌ O que NÃO fazemos |
-|---|---|
-| Usar exclusivamente a YouTube Data API v3 oficial | Scraping de HTML ou endpoints não-oficiais |
-| Coletar apenas metadados públicos | Armazenar PII de comentaristas (username, foto, ID) |
-| Cache local com TTL de 30 dias (metadados) | Bypass de cotas com múltiplas API keys |
-| Deletar textos de comentários em 7 dias | Acessar vídeos de membros ou dados privados |
-| Exibir aviso de privacidade antes de qualquer coleta | Executar ações no YouTube em nome do usuário |
-| Processar NLP 100% localmente | Enviar dados para APIs externas de IA/NLP |
-
-**Fundamentos legais:** YouTube ToS §4 e §5B, YouTube Developer Policies §II e §III, LGPD (Art. 5), GDPR (Art. 4).
-
-### Gerenciar seus dados locais
+### `export` — Exportar dados existentes
 
 ```bash
-# Ver onde os dados estão armazenados
-# Padrão: ~/.sorenus15k/data.db
+java -jar build/libs/ytdark-all.jar export \
+  --format xlsx \
+  --output ./relatorio/ \
+  --channel-id UCxxxxxx
+```
 
-# Apagar cache de um canal específico
-ytdark --purge-cache https://www.youtube.com/@handle
+### `status` — Status do sistema
 
-# Apagar TUDO (banco completo)
-ytdark --purge-cache --all
+```bash
+java -jar build/libs/ytdark-all.jar status
+```
+
+### `config` — Gerenciar configuração
+
+```bash
+# Criar arquivo de configuração
+java -jar build/libs/ytdark-all.jar config init
+
+# Listar configurações
+java -jar build/libs/ytdark-all.jar config list
+
+# Definir valor
+java -jar build/libs/ytdark-all.jar config set --key defaults.quota_budget --value 10000
+
+# Obter valor
+java -jar build/libs/ytdark-all.jar config get --key defaults.quota_budget
+
+# Purgar dados
+java -jar build/libs/ytdark-all.jar config purge --channel-id UCxxxxxx
+java -jar build/libs/ytdark-all.jar config purge --all
 ```
 
 ---
 
-## Limitações Técnicas Conhecidas
+## Navegação TUI
 
-A ferramenta declara explicitamente o que **não é possível** via API oficial:
-
-- ❌ **Comentário fixado (pinned)** — não identificável via API v3
-- ❌ **Métricas históricas por dia** — não disponível; usa snapshots comparados entre runs
-- ❌ **Receita / monetização real** — inferida por heurísticas de CTA e links
-- ❌ **Impressões e CTR da thumbnail** — disponível apenas no YouTube Studio (privado)
-- ❌ **Watch time e taxa de retenção** — disponível apenas no YouTube Studio (privado)
-- ⚠️ **Classificação de Shorts** — heurística por duração (≤ 60s); sem campo direto na API v3
-- ⚠️ **Vanity URLs (/c/nome)** — solicitar channelId ou handle equivalente ao usuário
-
----
-
-## Roadmap
-
-| Fase | Status | Principais entregas |
-|---|---|---|
-| **MVP** | 🔨 Em desenvolvimento | Pipeline completo, TUI Telas A+B, exports MD/CSV/SQLite, compliance |
-| **v1** | 📋 Planejado | Módulo comentários completo, Telas C–F, compare de canais, padrões de título, HTML+JSON |
-| **v2** | 💡 Futuro | Embeddings locais (sentence-transformers), agendamento cron, plugin system, dashboard HTML standalone |
+| Tecla | Ação |
+|-------|------|
+| `1` | Tela Overview |
+| `2` | Tela Vídeos |
+| `3` | Tela Breakouts |
+| `4` | Tela Monetização |
+| `5` | Tela Temas |
+| `6` | Tela Comentários |
+| `N` | Nova Coleta (instruções) |
+| `Q` / `ESC` | Sair |
+| `↑↓` | Navegar lista de vídeos |
+| `PgUp/PgDn` | Saltar 10 vídeos |
+| `S` | Ordenar por coluna |
+| `/` | Filtrar por título |
+| `Enter` | Detalhe do vídeo |
 
 ---
 
-## Estrutura do Projeto
+## Formatos de Export
+
+| Formato | Extensão | Notas |
+|---------|----------|-------|
+| CSV | `.csv` | UTF-8 com BOM (LibreOffice) |
+| JSON | `.json` | Hierárquico canal→vídeos→métricas |
+| XLSX | `.xlsx` | 5 abas (Apache POI) |
+| ODS | `.ods` | 5 abas (OdfToolkit) |
+| Markdown | `.md` | Relatório formatado |
+
+Todos os exporters têm **5 seções/abas:** Resumo, Vídeos, Comentários, Links_CTA, Métricas.
+
+---
+
+## Métricas Calculadas
+
+| Métrica | Fórmula |
+|---------|---------|
+| Views/Dia | `viewCount / max(1, diasDesdePublicação)` |
+| Baseline | Mediana de views/dia de todos vídeos elegíveis |
+| Delta vs Baseline | `video.viewsPerDay / baseline` |
+| Engajamento | `(likes + comentários) / viewCount` |
+| Outlier IQR | `viewsPerDay >= P75 + 1.5 × IQR` |
+| Outlier Z-Score | `z = (vpd - média) / stdDev >= threshold` |
+| CTA Score | Soma ponderada de sinais detectados (0–100) |
+
+**Vídeos excluídos das métricas:** membros-only, indisponíveis, lives ativas.
+
+---
+
+## Arquitetura
 
 ```
 ytdark/
-├── ytdark/
-│   ├── api/          # Camada de abstração da YouTube Data API v3
-│   ├── pipeline/     # Resolução, listagem, enriquecimento, comentários
-│   ├── metrics/      # Views/dia, engajamento, baseline, outliers
-│   ├── cta/          # Extração de links, CTA Score, monetização
-│   ├── themes/       # Padrões de título, clustering semântico
-│   ├── db/           # Schema SQLite, cache, TTL
-│   ├── tui/          # Painel TUI (6 telas)
-│   ├── cli/          # Comandos e flags
-│   └── exports/      # MD, HTML, CSV, SQLite, JSON
-├── tests/
-├── config.example.yaml
-├── requirements.txt
-└── README.md
+├── gradlew / gradlew.bat
+├── build.gradle.kts
+├── src/main/kotlin/com/ytdark/
+│   ├── Main.kt                      ← Entry point
+│   ├── api/
+│   │   ├── ApiKeyManager.kt         ← Gestão segura da API key
+│   │   ├── YouTubeApiClient.kt      ← Cliente HTTP YouTube API v3
+│   │   ├── RateLimiter.kt           ← Rate limiting + retry + quota
+│   │   └── Models.kt                ← DTOs de resposta da API
+│   ├── domain/Entities.kt           ← Entidades de domínio
+│   ├── persistence/DatabaseManager.kt ← SQLite via Exposed ORM
+│   ├── service/
+│   │   ├── ScanService.kt           ← Orquestração do pipeline
+│   │   ├── MetricsService.kt        ← Cálculo de métricas
+│   │   └── LinkExtractor.kt         ← Extração e classificação de links
+│   ├── cli/Commands.kt              ← Comandos Clikt
+│   ├── tui/                         ← Interface TUI Lanterna
+│   ├── export/                      ← CSV, JSON, XLSX, ODS, Markdown
+│   └── config/ConfigManager.kt      ← Gestão de configuração YAML
+└── src/main/resources/
+    ├── logback.xml
+    └── db/migration/V1__init.sql    ← Schema via Flyway
 ```
 
 ---
 
-## Contribuindo
+## Segurança da API Key
 
-1. Fork o repositório
-2. Crie uma branch: `git checkout -b feature/minha-feature`
-3. Commit suas alterações: `git commit -m 'feat: descrição da feature'`
-4. Push: `git push origin feature/minha-feature`
-5. Abra um Pull Request
-
-**Antes de contribuir, leia:**
-- As regras de compliance desta ferramenta são inegociáveis
-- Nenhum PR que adicione scraping, coleta de PII ou bypass de API será aceito
-- Mantenha a assinatura `YTDARK BY SORENUS15K` em todos os outputs e mocks
+1. **Nunca hardcodada** — carregada de flag CLI, ENV ou config file
+2. **Precedência:** `--api-key` > `YOUTUBE_API_KEY` > `~/.ytdark/config.yaml`
+3. **Armazenada como `CharArray`** — nunca como `String`
+4. **Zeroizada** após uso com `Arrays.fill(arr, '\u0000')`
+5. **Mascarada** em logs: `AIza...XXXX`
+6. **Config file** criado com permissões `chmod 600`
+7. **URLs de request nunca logadas** (contêm a key no query param)
+8. **Erros de API** loggados com hash SHA-256 dos params (sem expor key)
 
 ---
 
-## Licença
+## Limitações Técnicas
 
-MIT License — veja [LICENSE](LICENSE) para detalhes.
+| Limitação | Descrição |
+|-----------|-----------|
+| Vanity URLs `/c/` | Não suportadas pela YouTube Data API v3 |
+| Subscriber count oculto | Registrado como NULL, nunca estimado |
+| Likes desativados | Calculado como NULL, engajamento marcado aproximado |
+| `search.list` desabilitado | Custam 100 unidades/request |
+| Comentários PII | Apenas texto coletado, sem autor/ID/foto |
+| TTL comentários | 7 dias (mais restritivo que metadados) |
+| Cota diária | 10.000 unidades padrão (pode ser ampliado no GCP) |
 
 ---
 
-## Aviso Legal
+## Troubleshooting
 
-Esta ferramenta é fornecida para fins de pesquisa e análise de dados públicos. O uso é de responsabilidade exclusiva do usuário, que deve respeitar os [Termos de Serviço do YouTube](https://www.youtube.com/static?template=terms), a [Política de Desenvolvedores da YouTube Data API](https://developers.google.com/youtube/terms/api-services-terms-of-service), a LGPD e o GDPR.
+### `ApiKeyNotFoundException: YouTube API key not found`
+
+```bash
+# Solução:
+export YOUTUBE_API_KEY="AIzaSy..."
+# ou
+java -jar ytdark-all.jar scan --target @canal --api-key AIzaSy...
+```
+
+### `VanityUrlNotSupported: URLs /c/ não são suportadas`
+
+```
+A YouTube Data API v3 não suporta vanity URLs (/c/).
+Solução:
+1. Abra o canal no navegador
+2. Ctrl+U para ver o código-fonte
+3. Busque por 'externalId' — você verá UCxxxxxxxxxx
+4. Execute: java -jar ytdark-all.jar scan --target UCxxxxxxxxxx
+```
+
+### `quotaExceeded: Cota da API esgotada`
+
+```
+A cota de 10.000 unidades diárias foi atingida.
+Reset automático às 00:00 Pacific Standard Time (PST).
+Dados parciais foram salvos em ~/.ytdark/data.db.
+Para verificar: java -jar ytdark-all.jar status
+```
 
 ---
 
-<div align="center">
+## Declaração de Compliance
 
-**YTDARK BY SORENUS15K**
+- Todos os dados coletados via **YouTube Data API v3 oficial** (TOS compliant)
+- **Sem web scraping** — apenas endpoints oficiais da API
+- **Sem coleta de PII:** nome/ID/foto de comentaristas nunca coletados
+- Textos de comentários retidos por **máximo 7 dias**
+- Metadados de vídeo/canal retidos por **máximo 30 dias**
+- Usuário pode purgar todos os dados com `ytdark config purge --all`
 
-*Dados coletados exclusivamente via YouTube Data API v3 (oficial)*
+---
 
-</div>
+*YTDARK | BY SORENUS15K v2.0 — Dados via YouTube Data API v3 (oficial)*
